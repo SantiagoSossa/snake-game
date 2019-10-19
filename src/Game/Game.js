@@ -7,7 +7,7 @@ export default class Game extends Component {
 
     state = {
         grid: [],
-        size:15,
+        size:14,
         gameStarted: false,
         direction:'right'
     };
@@ -15,17 +15,17 @@ export default class Game extends Component {
     moveSnake = (key) => {
         
         const head = this.getSnakeHead();
-        let directionATM = null;
-        if(key=='up' && head[0]>0){
+        let directionATM = this.state.direction;
+        if(key=='up' && directionATM != "down" && head[0]>0){
             directionATM = "up";
         }
-        if(key=='down' && head[0]<this.state.size-1){
+        if(key=='down' && directionATM != "up" && head[0]<this.state.size-1){
             directionATM = "down";
         }
-        if(key=='left' && head[1]>0){
+        if(key=='left' && directionATM != "right" && head[1]>0){
             directionATM = "left";
         }
-        if(key=='right' && head[1]<this.state.size-1){
+        if(key=='right' && directionATM != "left" && head[1]<this.state.size-1){
             directionATM = "right";
         }
         this.setState({direction:directionATM});
@@ -64,7 +64,6 @@ export default class Game extends Component {
     }
 
     adaptBody = (updateBoard,tail) => {
-        console.log("Nahhh");
         if(updateBoard[tail[0]][tail[1]+1] == 1){
             updateBoard[tail[0]][tail[1]+1] = 3;
             updateBoard[tail[0]][tail[1]] = 0;
@@ -84,7 +83,6 @@ export default class Game extends Component {
     }
 
     snakeEats = (updateBoard,tail) => {
-        console.log("EAAAAAAAAAAAAAT");
         if(updateBoard[tail[0]][tail[1]+1] == 1){
             updateBoard[tail[0]][tail[1]] = 3;
         }
@@ -106,7 +104,6 @@ export default class Game extends Component {
             arr[i] = [];
             for(let j = 0; j < this.state.size; j++) {
                 if(i==0 || j==0 || i==this.state.size-1 || j==this.state.size-1){
-                    console.log("here");
                     arr[i][j] = 4;
                 }
                 else{
@@ -130,19 +127,13 @@ export default class Game extends Component {
             const tail = this.getSnakeTail();
             const updateBoard = [...this.state.grid];
             let direction=this.state.direction;
-            console.log("interval",direction);
             if(direction=='up'){
                 if(updateBoard[head[0]-1][head[1]]==1||
                     updateBoard[head[0]-1][head[1]]==3){
-                    console.log("you lost");
                     clearInterval(this.intervalTimer);
                 }
                 else if(updateBoard[head[0]-1][head[1]]!=4){
-                   
-                    console.log(updateBoard[head[0]-1][head[1]]);
-                    
                     if(updateBoard[head[0]-1][head[1]]==5){
-                        console.log("yoo work");
                         this.snakeEats(updateBoard,tail);
                     }
                     else{
@@ -157,13 +148,10 @@ export default class Game extends Component {
             if(direction=='down'){
                 if(updateBoard[head[0]+1][head[1]]==1||
                     updateBoard[head[0]+1][head[1]]==3){
-                    console.log("you lost");
                     clearInterval(this.intervalTimer);
                 }
                 else if(updateBoard[head[0]+1][head[1]]!=4){
-                    console.log(updateBoard[head[0]+1][head[1]]);
                     if(updateBoard[head[0]+1][head[1]]==5){
-                        console.log("yoo work");
                         this.snakeEats(updateBoard,tail);
                     }
                     else{
@@ -177,13 +165,10 @@ export default class Game extends Component {
             if(direction=='left'){
                 if(updateBoard[head[0]][head[1]-1]==1||
                     updateBoard[head[0]][head[1]-1]==3){
-                    console.log("you lost");
                     clearInterval(this.intervalTimer);
                 }
                 else if(updateBoard[head[0]][head[1]-1]!=4){
-                    console.log(updateBoard[head[0]][head[1]-1]);
                     if(updateBoard[head[0]][head[1]-1]==5){
-                        console.log("yoo work");
                         this.snakeEats(updateBoard,tail);
                     }
                     else{
@@ -197,14 +182,11 @@ export default class Game extends Component {
             if(direction=='right'){
                 if(updateBoard[head[0]][head[1]+1]==1||
                     updateBoard[head[0]][head[1]+1]==3){
-                    console.log("you lost");
                     clearInterval(this.intervalTimer);
                 }
                 else if(updateBoard[head[0]][head[1]+1]!=4){
-                    console.log(updateBoard[head[0]][head[1]+1]);
                     
                     if(updateBoard[head[0]][head[1]+1]==5){
-                        console.log("yoo work");
                         this.snakeEats(updateBoard,tail);
                     }
                     else{
