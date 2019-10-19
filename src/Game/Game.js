@@ -9,7 +9,8 @@ export default class Game extends Component {
         grid: [],
         size:14,
         gameStarted: false,
-        direction:'right'
+        direction:'right',
+        lastDirections: ['right','right','right','right','right']
     };
 
     moveSnake = (key) => {
@@ -64,38 +65,48 @@ export default class Game extends Component {
     }
 
     adaptBody = (updateBoard,tail) => {
-        if(updateBoard[tail[0]][tail[1]+1] == 1){
+        const lastDirectionsArray = [...this.state.lastDirections];
+        const lastDirection = lastDirectionsArray.pop();
+        if(updateBoard[tail[0]][tail[1]+1] == 1 && lastDirection == 'right'){
             updateBoard[tail[0]][tail[1]+1] = 3;
             updateBoard[tail[0]][tail[1]] = 0;
-        }
-        if(updateBoard[tail[0]+1][tail[1]] == 1){
+        } 
+        if(updateBoard[tail[0]+1][tail[1]] == 1 && lastDirection == 'down'){
             updateBoard[tail[0]+1][tail[1]] = 3;
             updateBoard[tail[0]][tail[1]] = 0;
         }
-        if(updateBoard[tail[0]][tail[1]-1] == 1){
+        if(updateBoard[tail[0]][tail[1]-1] == 1  && lastDirection == 'left'){
             updateBoard[tail[0]][tail[1]-1] = 3;
             updateBoard[tail[0]][tail[1]] = 0;
         }
-        if(updateBoard[tail[0]-1][tail[1]] == 1){
+        if(updateBoard[tail[0]-1][tail[1]] == 1  && lastDirection == 'up'){
             updateBoard[tail[0]-1][tail[1]] = 3;
             updateBoard[tail[0]][tail[1]] = 0;
         }
+        return lastDirectionsArray;
     }
 
-    snakeEats = (updateBoard,tail) => {
-        if(updateBoard[tail[0]][tail[1]+1] == 1){
+    snakeEats = (updateBoard,tail,direction) => {
+        
+        const lastDirectionsArray = [...this.state.lastDirections];
+        if(updateBoard[tail[0]][tail[1]+1] == 1 && direction == 'right'){
             updateBoard[tail[0]][tail[1]] = 3;
+            lastDirectionsArray.unshift(direction);
         }
-        if(updateBoard[tail[0]+1][tail[1]] == 1){
+        if(updateBoard[tail[0]+1][tail[1]] == 1 && direction == 'down'){
             updateBoard[tail[0]][tail[1]] = 3;
+            lastDirectionsArray.unshift(direction);
         }
-        if(updateBoard[tail[0]][tail[1]-1] == 1){
+        if(updateBoard[tail[0]][tail[1]-1] == 1 && direction == 'left'){
             updateBoard[tail[0]][tail[1]] = 3;
+            lastDirectionsArray.unshift(direction);
         }
-        if(updateBoard[tail[0]-1][tail[1]] == 1){
+        if(updateBoard[tail[0]-1][tail[1]] == 1 && direction == 'up'){
             updateBoard[tail[0]][tail[1]] = 3;
+            lastDirectionsArray.unshift(direction);
         }
         this.createFood();
+        return lastDirectionsArray;
     }
 
     startGame = () => {
@@ -111,9 +122,12 @@ export default class Game extends Component {
                 }
             }
         }
-        arr[5][5] = 3;
-        arr[5][(5)+1] = 1;
-        arr[5][(5)+2] = 2;
+        arr[5][1] = 3;
+        arr[5][(1)+1] = 1;
+        arr[5][(1)+2] = 1;
+        arr[5][(1)+3] = 1;
+        arr[5][(1)+4] = 1;
+        arr[5][(1)+5] = 2;
         this.setState({grid:arr}, () => {
           this.timerStart();
           });
@@ -126,6 +140,7 @@ export default class Game extends Component {
             const head = this.getSnakeHead();
             const tail = this.getSnakeTail();
             const updateBoard = [...this.state.grid];
+            let lastDirections = null;
             let direction=this.state.direction;
             if(direction=='up'){
                 if(updateBoard[head[0]-1][head[1]]==1||
@@ -134,10 +149,10 @@ export default class Game extends Component {
                 }
                 else if(updateBoard[head[0]-1][head[1]]!=4){
                     if(updateBoard[head[0]-1][head[1]]==5){
-                        this.snakeEats(updateBoard,tail);
+                        lastDirections = this.snakeEats(updateBoard,tail,direction);
                     }
                     else{
-                    this.adaptBody(updateBoard,tail);
+                        lastDirections = this.adaptBody(updateBoard,tail);
                     }
                     updateBoard[head[0]-1][head[1]] = 2;
                     updateBoard[head[0]][head[1]] = 1;
@@ -152,10 +167,10 @@ export default class Game extends Component {
                 }
                 else if(updateBoard[head[0]+1][head[1]]!=4){
                     if(updateBoard[head[0]+1][head[1]]==5){
-                        this.snakeEats(updateBoard,tail);
+                        lastDirections = this.snakeEats(updateBoard,tail,direction);
                     }
                     else{
-                    this.adaptBody(updateBoard,tail);
+                        lastDirections = this.adaptBody(updateBoard,tail);
                     }
                     updateBoard[head[0]+1][head[1]] = 2;
                     updateBoard[head[0]][head[1]] = 1;
@@ -169,10 +184,10 @@ export default class Game extends Component {
                 }
                 else if(updateBoard[head[0]][head[1]-1]!=4){
                     if(updateBoard[head[0]][head[1]-1]==5){
-                        this.snakeEats(updateBoard,tail);
+                        lastDirections = this.snakeEats(updateBoard,tail,direction);
                     }
                     else{
-                    this.adaptBody(updateBoard,tail);
+                        lastDirections = this.adaptBody(updateBoard,tail);
                     }
                     updateBoard[head[0]][head[1]-1] = 2;
                     updateBoard[head[0]][head[1]] = 1;
@@ -185,20 +200,24 @@ export default class Game extends Component {
                     clearInterval(this.intervalTimer);
                 }
                 else if(updateBoard[head[0]][head[1]+1]!=4){
-                    
                     if(updateBoard[head[0]][head[1]+1]==5){
-                        this.snakeEats(updateBoard,tail);
+                        lastDirections = this.snakeEats(updateBoard,tail,direction);
                     }
                     else{
-                    this.adaptBody(updateBoard,tail);
+                        lastDirections = this.adaptBody(updateBoard,tail);
                     }
                     updateBoard[head[0]][head[1]+1] = 2;
                     updateBoard[head[0]][head[1]] = 1;
                     direction = "right";
                 }
             }
-            
-            this.setState({grid:updateBoard, direction:direction});
+            if(!lastDirections){
+                clearInterval(this.intervalTimer);
+            }
+            else{
+                lastDirections.unshift(direction);
+            }
+            this.setState({grid:updateBoard, direction:direction, lastDirections:lastDirections});
         }, 200);
     }
     
@@ -212,10 +231,9 @@ export default class Game extends Component {
                 <h1>Snake Game</h1>
                 {board}
                 <KeyboardEventHandler
-                handleKeys={['up', 'left', 'right', 'down','space']}
+                handleKeys={['up', 'left', 'right', 'down']}
                 onKeyEvent={(key, e) => this.moveSnake(key)}/>
                 <button onClick={this.startGame}>start</button>
-                <button onClick={this.timerStart}>Go</button>
             </div>
         )
     }
