@@ -1,0 +1,18 @@
+.UpButton{
+    margin-top: 15%;
+}
+
+.MiddleButtons{
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    width: 200px;
+}
+
+.DownButton{
+    margin-bottom: 15%;
+}
+
+i{
+    font-size: 50px;
+}

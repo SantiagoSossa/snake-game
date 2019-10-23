@@ -1,6 +1,6 @@
 .Wall{
-    height: 50px;
-    width: 50px;
-    background-color: red;
-    border: 1px solid red;
+    height: var(--cell-size-desktop);
+    width: var(--cell-size-desktop);
+    background-color: rgb(14, 71, 29);
+    border: 1px solid rgb(14, 71, 29);
 }

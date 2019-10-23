@@ -1,6 +1,4 @@
 .WhiteSpace{
-    height: 50px;
-    width: 50px;
-    background-color: lightgray;
-    border: 1px solid #ccc;
+    height: var(--cell-size-desktop);
+    width: var(--cell-size-desktop);
 }

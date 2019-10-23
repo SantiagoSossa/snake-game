@@ -1,6 +1,9 @@
 .SnakePiece{
-    height: 50px;
-    width: 50px;
-    background-color: black;
-    border: 1px solid black;
+    height: var(--cell-size-desktop);
+    width: var(--cell-size-desktop);
+    background-color: white;
+    border: 1px solid white;
+    /* background: -webkit-gradient(linear, left top, left bottom, from(#21b058), to(rgb(14, 71, 29)));
+    background: linear-gradient(to bottom, #21b058, rgb(14, 71, 29)); */
+    border-radius: 25%;
 }

@@ -1,6 +1,7 @@
 .Food{
-    height: 50px;
-    width: 50px;
-    background-color: green;
-    border: 1px solid green;
+    height: var(--cell-size-desktop);
+    width: var(--cell-size-desktop);
+    background: -webkit-gradient(linear, left top, left bottom, from(rgb(187, 61, 61)), to(rgb(180, 29, 29)));
+    background: linear-gradient(to bottom, rgb(187, 61, 61), rgb(180, 29, 29));
+    border-radius: 35%;
 }
